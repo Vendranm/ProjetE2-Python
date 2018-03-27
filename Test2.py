@@ -3,6 +3,7 @@ import numpy as np
 from resizeimage import resizeimage    
 import math
 import os
+import shutil
 
 def sobel(im):
     imConv = im.convert("L")
@@ -46,15 +47,19 @@ def average_images(images):
     result.show()
     return result
 def ouvImage():
-    Taille=[32,64]
-    tabimS = []
     for dossier, sous_dossiers, fichiers in os.walk('images/faces94'):
-        for fichier in fichiers:
-            im = Image.open('images/faces94/fichier')
-            imC = im.convert("L")
-            imR = resizeimage.resize_contain(im,Taille)
-            imS = imR.sobel(imR)
-            tabimS.append(imS)
+        if os.path.isfile(fichiers) :
+            for fichier in fichiers:
+                shutil.copy(fichier, 'images/DataBase')
+
+def imMoy():
+    Taille =[32,64]
+    for fichiers in os.walk('images/DataBase'):
+        im = Image.open(fichiers)
+        imC = im.convert("L")
+        imR = resizeimage.resize_contain(im,Taille)
+        imS = imR.sobel(imR)
+        tabimS.append(imS)
     imMoy = average_images(tabimS)
     imMoy.show()
 #Taille=[32,64]
@@ -119,6 +124,7 @@ def comparaison(im):
                     y+=j
 #comparaison(Image.open('images/imTest.JPG'))
 ouvImage()
+imMoy()
 #for i in tabim:
     #i.show()    
     #print("Hauteur = ", i.size[0], "Largeur : ", i.size[1])
