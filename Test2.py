@@ -1,4 +1,5 @@
 from PIL import Image
+import PIL
 import numpy as np
 from resizeimage import resizeimage    
 import math
@@ -48,20 +49,28 @@ def average_images(images):
     return result
 def ouvImage():
     for dossier, sous_dossiers, fichiers in os.walk('images/faces94'):
-        if os.path.isfile(fichiers) :
-            for fichier in fichiers:
-                shutil.copy(fichier, 'images/DataBase')
+        #print("dossier",dossier)
+        #print("sdossier",sous_dossiers)
+        #print(fichiers)  
+        for fichier in fichiers:
+            shutil.copy(dossier+"/"+fichier, 'images/DataBase')
 
 def imMoy():
-    Taille =[32,64]
-    for fichiers in os.walk('images/DataBase'):
-        im = Image.open(fichiers)
-        imC = im.convert("L")
-        imR = resizeimage.resize_contain(im,Taille)
-        imS = imR.sobel(imR)
-        tabimS.append(imS)
+    Taille =[30,40]
+    tabimS = []
+    for dossier, sous_dossier, fichiers in os.walk('images/DataBaseTest'):
+        for files in fichiers:
+            if files.endswith('.jpg'):
+                im = Image.open(os.path.join(dossier,files))
+                #imR = resizeimage.resize_contain(im,Taille)
+                imR = im.resize(Taille, PIL.Image.ANTIALIAS)
+                imC = imR.convert("L")       
+                imS = sobel(imC)
+                tabimS.append(imS)
     imMoy = average_images(tabimS)
+    imMoy.save('imMoy.jpg')
     imMoy.show()
+
 #Taille=[32,64]
 #im1 = Image.open('images/im1.jpeg')
 #im1C = im1.convert("RGB")
@@ -92,22 +101,25 @@ def imMoy():
 #imMoy = average_images(tabimS)
 
 def difference(im1,im2, dx, dy):
-    marge =20
+    marge =5
     compris = False
     pix1 = im1.load()
+    imS2 = sobel(im2)
+    imC2 = imS2.convert("L")
     pix2 = im2.load()
-    print(im1.mode, im2.mode)
+    #print(im1.mode, im2.mode)
     for x in range(im1.size[0]):
         for y in range(im1.size[1]):
-            r,g,b = pix1[x,y]
-            R,G,B = pix2[x+dx,y+dy]
-            if abs(r-R)<=marge and abs(b-B)<=marge and abs(g-G)<=marge:
-                compris =True
+            l = pix1[x,y]
+            L = pix2[x+dx,y+dy]
+    if abs(l-L)<=marge :
+        compris =True
     if compris:
         print("Ceci est un visage") 
     return compris 
 
 def comparaison(im):
+    imMoy = Image.open('images/imMoy.jpg')
     pix=imMoy.load()
     pixTest = im.load()
     L = im.size[0]
@@ -120,11 +132,12 @@ def comparaison(im):
             for i in range(lmoy):
                 for j in range(hmoy):
                     difference(imMoy,im,x,y)
-                    x+=i
-                    y+=j
+                    
 #comparaison(Image.open('images/imTest.JPG'))
-ouvImage()
-imMoy()
+#ouvImage()
+#imMoy()
+im = Image.open("images/PhotoIdTest1.jpeg")
+comparaison(im)
 #for i in tabim:
     #i.show()    
     #print("Hauteur = ", i.size[0], "Largeur : ", i.size[1])
