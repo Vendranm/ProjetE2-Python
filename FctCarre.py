@@ -3,20 +3,20 @@ from PIL import Image
 
 def draw_vline2(im, x1,x2,y, color):
     buffer = im.load()
-    for x in range (min(x1,x2),max(x1,x2)):
-        buffer[x,y]=color
+    for x in range (int(min(x1,x2)),int(max(x1,x2))):
+        buffer[x,y]= color
     #mettre du code ici
     pass#pass sert juste a ce que ca compile
 
 
 def draw_hline2(im, y2,y1,x, color):
     buffer=im.load()
-    for y in range (min(y1,y2),max(y1,y2)):
-        buffer [x,y]=color
+    for y in range (int(min(y1,y2)),int(max(y1,y2))):
+        buffer [x,y]= color
     #mettre du code ici
     pass#pass sert juste a ce que ca compile
 
-def afficher(): 
+def afficher(im, x1,x2,y1,y2): 
 #	im = Image.new("RGB", (30,40))
 	color=0,255,0
 #	x1 = 5
@@ -30,7 +30,8 @@ def afficher():
 	draw_hline2(im, y1,y2,x2, color)
 	buffer=im.load()
 	im.save("image.jpg")
+
+	
 	pass
 
-afficher()
 

@@ -5,7 +5,7 @@ from resizeimage import resizeimage
 import math
 import os
 import shutil
-#import FctCarre
+from FctCarre import *
 
 def sobel(im):
     imConv = im.convert("L")
@@ -117,7 +117,7 @@ def difference(im1,im2, dx, dy):
 def comparaison(im, marge):
     imMoy = Image.open('images/imMoy.jpg')
     #imMoy.show()
-    im.show()
+    #im.show()
     pix=imMoy.load()
     pixTest = im.load()
     L = im.size[0]
@@ -159,8 +159,14 @@ while(imR.size[0]>xmoy and imR.size[1]>ymoy):
     imR = imC2.resize((int(imC2.size[0]/resize),int(imC2.size[1]/resize)), Image.ANTIALIAS)
 
 print(*total_results, sep="\n")
-for((i, j) in total_results):
-    
+for z, l in total_results:
+    for x,y in l:
+        x2 = (x+xmoy)*z
+        y2 = (y+ymoy)*z
+        x*=z
+        y*=z
+
+    afficher(im, x, x2, y, y2)
 #for i in tabim:
     #i.show()    
     #print("Hauteur = ", i.size[0], "Largeur : ", i.size[1])
