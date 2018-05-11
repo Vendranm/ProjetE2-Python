@@ -5,7 +5,7 @@ from resizeimage import resizeimage
 import math
 import os
 import shutil
-import FctCarre
+#import FctCarre
 
 def sobel(im):
     imConv = im.convert("L")
@@ -124,14 +124,18 @@ def comparaison(im, marge):
     lmoy = imMoy.size[1]
     H = im.size[1]
     hmoy = imMoy.size[1]
+    visage = False
+    results = []
     for x in range(0,L - lmoy):
         #print(x,"/",L - lmoy)
         for y in range(0,H - hmoy):
             s = difference(imMoy,im,x,y)
-            if s < marge:
+            if s < marge*1.01:
                 print("visage : ",x,y,s)
+                results.append((x,y))
                 marge = s
-    return marge     
+                visage = True
+    return marge,results
 #comparaison(Image.open('images/imTest.JPG'))
 #ouvImage()
 #imMoy()
@@ -145,15 +149,18 @@ marge = 20000000
 imR = imC2
 fact = 1.1
 resize = 1
+total_results = []
 while(imR.size[0]>xmoy and imR.size[1]>ymoy): 
     print("RESIZE", resize)
     imS2 = sobel(imR)
-    
-    marge = comparaison(imS2, marge)
+    marge,results = comparaison(imS2, marge)
+    total_results.append((resize, results))
     resize*=fact
     imR = imC2.resize((int(imC2.size[0]/resize),int(imC2.size[1]/resize)), Image.ANTIALIAS)
-    
 
+print(*total_results, sep="\n")
+for((i, j) in total_results):
+    
 #for i in tabim:
     #i.show()    
     #print("Hauteur = ", i.size[0], "Largeur : ", i.size[1])
