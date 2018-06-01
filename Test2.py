@@ -130,7 +130,7 @@ def comparaison(im, marge):
         #print(x,"/",L - lmoy)
         for y in range(0,H - hmoy):
             s = difference(imMoy,im,x,y)
-            if s < marge*1.01:
+            if s < marge*1.03:
                 print("visage : ",x,y,s)
                 results.append((x,y))
                 marge = s
@@ -140,8 +140,10 @@ def comparaison(im, marge):
 #ouvImage()
 #imMoy()
 imMoy = Image.open("images/imMoy.jpg")
-im = Image.open("test.jpg")
+im = Image.open("images/PhotoClasse1.jpeg")
 imC2 = im.convert("L")
+imR = imC2.resize((int(imC2.size[0]/3),int(imC2.size[1]/3)), Image.ANTIALIAS)
+print("x : ", imR.size[0], "y :", imR.size[1])
 xmoy = imMoy.size[0]
 ymoy = imMoy.size[1]
 marge = 20000000
