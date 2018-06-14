@@ -1,3 +1,6 @@
+#Code rédigé par Maxime Vendrand Maillet 
+#Copyrigt Sur l'utilisation du code 
+
 from PIL import Image
 import PIL
 import numpy as np
@@ -130,25 +133,31 @@ def comparaison(im, marge):
         #print(x,"/",L - lmoy)
         for y in range(0,H - hmoy):
             s = difference(imMoy,im,x,y)
-            if s < marge*1.03:
+            if s < marge*1.3:
                 print("visage : ",x,y,s)
                 results.append((x,y))
-                marge = s
+                if s < marge :
+                    marge = s
                 visage = True
     return marge,results
 #comparaison(Image.open('images/imTest.JPG'))
 #ouvImage()
 #imMoy()
 imMoy = Image.open("images/imMoy.jpg")
-im = Image.open("images/PhotoClasse1.jpeg")
+#im = Image.open("test.jpg")
+im = Image.open("test.jpg")
 imC2 = im.convert("L")
-imR = imC2.resize((int(imC2.size[0]/3),int(imC2.size[1]/3)), Image.ANTIALIAS)
-print("x : ", imR.size[0], "y :", imR.size[1])
+if(imC2.size[0]>700 or imC2.size[1]>700):
+    imR1 = imC2.resize((int(imC2.size[0]/3),int(imC2.size[1]/3)), Image.ANTIALIAS)
+else: 
+    imR1 = imC2
+#print("x : ", imR.size[0], "y :", imR.size[1])
 xmoy = imMoy.size[0]
 ymoy = imMoy.size[1]
 marge = 20000000
 
-imR = imC2
+#imR = imC2
+imR = imR1
 fact = 1.1
 resize = 1
 total_results = []
@@ -158,7 +167,7 @@ while(imR.size[0]>xmoy and imR.size[1]>ymoy):
     marge,results = comparaison(imS2, marge)
     total_results.append((resize, results))
     resize*=fact
-    imR = imC2.resize((int(imC2.size[0]/resize),int(imC2.size[1]/resize)), Image.ANTIALIAS)
+    imR = imR1.resize((int(imR1.size[0]/resize),int(imR1.size[1]/resize)), Image.ANTIALIAS)
 
 print(*total_results, sep="\n")
 for z, l in total_results:
@@ -167,8 +176,12 @@ for z, l in total_results:
         y2 = (y+ymoy)*z
         x*=z
         y*=z
-
-    afficher(im, x, x2, y, y2)
+        if(im.size[0]>700 or im.size[1]>700):
+            x*=3
+            y*=3
+            x2*=3
+            y2*=3
+        afficher(im, x, x2, y, y2)
 #for i in tabim:
     #i.show()    
     #print("Hauteur = ", i.size[0], "Largeur : ", i.size[1])
